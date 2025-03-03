@@ -1,0 +1,146 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+
+body {
+  margin: 0px;
+  padding: 0px;
+  font-family: "Rubik", serif;
+  color: #191b1d;
+  font-size: 16px;
+}
+
+.logo {
+  margin-left: 4rem;
+  margin-top: 2rem;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.logo:hover {
+  cursor: pointer;
+  color: #3b4044;
+}
+
+.form-header {
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+.form-container {
+  text-align: center;
+  width: 24.5rem;
+  margin: auto;
+  /* margin-top: 8rem; */
+}
+
+.form-subheader {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #768089;
+  margin: 0.5rem;
+}
+
+.form-linebreak {
+  width: 24.5rem;
+  color: #c8ccd0;
+  margin: auto;
+}
+
+.submit-button {
+  background-color: #191b1d;
+  width: 24.5rem;
+  height: 2.5rem;
+  color: #ffffff;
+  display: flex;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  font-weight: 500;
+}
+
+.submit-button:hover {
+  cursor: pointer;
+  background-color: #3b4044;
+}
+
+.secondary-button {
+  width: 6.375rem;
+  height: 1.625rem;
+  font-size: 14px;
+  font-weight: 300;
+  margin: 0px;
+}
+
+.form {
+  margin: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-top: 0.7rem;
+}
+
+.input {
+  width: 24.5rem;
+  height: 2.5rem;
+  border-radius: 10px;
+  border: 1px solid #c8ccd0;
+  padding-left: 10px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.input::placeholder {
+  color: #acb3b9;
+  font-weight: 300;
+}
+
+.input:focus {
+  border: 2px solid #acb3b9;
+  outline: none;
+}
+
+.input-label {
+  align-self: flex-start;
+  font-weight: 500;
+}
+
+.useful-links {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 0.7rem;
+  font-size: 0.875rem;
+  color: #9199a1;
+}
+
+.useful-link:hover {
+  cursor: pointer;
+  color: #acb3b9;
+}
+
+.page-container {
+  text-align: center;
+  margin: auto;
+  margin-top: 8rem;
+}
+
+.additionalMargin {
+  margin-top: 2rem;
+}
+
+.sub-label {
+  font-weight: 300;
+  font-size: 14px;
+  align-items: flex-start;
+}
+
+.hidden {
+  display: none;
+}
+
+.file-selection-container {
+  display: flex;
+  justify-content: space-between;
+  width: 24.5rem;
+}
