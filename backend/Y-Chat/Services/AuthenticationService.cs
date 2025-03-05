@@ -14,7 +14,11 @@ public class AuthenticationService(
     AppDbContext context,
     IEmailTokenService emailTokenService,
     IEmailSendingService emailSendingService,
-    IConfiguration configuration) : IAuthenticationService
+    IConfiguration configuration,
+    IUserService userService,
+    IValidateGoogleCaptchaService captchaService,
+    IImagesUploadService imagesUploadService) : IAuthenticationService
+
 {
     public async Task<AuthenticationResponse> Login(LoginDTO dto)
     {
@@ -31,18 +35,6 @@ public class AuthenticationService(
             throw new Exception("Wrong password");
         }
 
-        if (!user.EmailConfirmed)
-        {
-            //TODO Change exception handling
-            throw new Exception("Email is not confirmed");
-        }
-        Console.WriteLine(user.ProfileDetailsAdded);
-        if (!user.ProfileDetailsAdded)
-        {
-            //TODO Change exception handling
-            throw new Exception("Add profile details please");
-        }
-
         var token = new JwtToken { Token = jwtTokenHelper.GenerateToken(user.Email) };
         return new AuthenticationResponse { JwtToken = token };
     }
@@ -54,14 +46,22 @@ public class AuthenticationService(
 
         if (!emailValid)
         {
-            //TODO Change exception handling
             throw new Exception("Email is not valid");
         }
 
         if (!passwordValid.isValid)
         {
-            //TODO Change exception handling
             throw new Exception("Password is not valid");
+        }
+
+        string googleRecaptchaSiteKey = configuration["AppKeys:Site"] ?? "";
+        string googleRecaptchaSecret = configuration["AppKeys:GoogleSecret"] ?? "";
+
+        var captchaResponse =
+            await captchaService.ValidateCaptcha(dto.Captcha, googleRecaptchaSiteKey, googleRecaptchaSecret);
+        if (!captchaResponse.Success)
+        {
+            throw new Exception(captchaResponse.ErrorCodes.ToString());
         }
 
         var user = new User
@@ -70,7 +70,7 @@ public class AuthenticationService(
 
         var confirmationToken = emailTokenService.GenerateToken(user.Email);
 
-        var confirmationUrl = $"http://localhost:14650/api/auth/confirm?token={confirmationToken}";
+        var confirmationUrl = $"http://localhost:5226/api/auth/confirm-email?token={confirmationToken}";
 
         await emailSendingService.SendConfirmationEmail(user.Email, confirmationUrl);
 
@@ -87,10 +87,10 @@ public class AuthenticationService(
             //TODO Change exception handling
             throw new Exception("Invalid token.");
         }
-        
+
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(configuration["JwtSettings:SecretKey"]);
-        
+        var key = Encoding.ASCII.GetBytes(configuration["JwtSettings:SecretKey"] ?? "");
+
         try
         {
             var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
@@ -121,36 +121,28 @@ public class AuthenticationService(
         }
     }
 
-    public async Task<AddProfileDetailsResponse> AddProfileDetails(AddProfileDetailsDTO dto)
+    public async Task<AddProfileDetailsResponse> AddProfileDetails(AddProfileDetailsDTO dto, string token)
     {
-        var user = await context.Users.FirstOrDefaultAsync(user => user.Id == dto.Id);
-        
+        var user = await userService.GetUserByToken(token);
+
         if (user is null)
         {
-            //TODO Change exception handling
             throw new Exception("User was not found");
         }
-        
+
         if (user.ProfileDetailsAdded)
         {
-            //TODO Change exception handling
             throw new Exception("Profile details already added");
         }
         
-        var avatar = await ImageValidationService.ValidateImage(dto.AvatarURL);
-        
-        if (avatar is null)
-        {
-            //TODO Change exception handling
-            throw new Exception("Size is not valid or url is invalid");
-        }
-        
+        var url = await imagesUploadService.UploadImage(dto.Image);
+
         user.Username = dto.Username;
-        user.AvatarUrl = avatar;
+        user.AvatarUrl = url;
         user.ProfileDetailsAdded = true;
-        
+
         await context.SaveChangesAsync();
-        
+
         return new AddProfileDetailsResponse { Message = "Profile details added" };
     }
 }

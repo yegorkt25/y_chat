@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Y_Chat.DTOs;
@@ -7,35 +8,37 @@ namespace Y_Chat.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IAuthenticationService authenticationService) : ControllerBase
+    public class AuthController(IAuthenticationService authenticationService, ILogger<AuthController> logger) : ControllerBase
     {
         [HttpPost("login")]
         public async Task<ActionResult> Login(LoginDTO loginDto)
         {
             try
             {
+                logger.LogInformation("email: {}; password: {}", loginDto.Email, loginDto.Password);
                 var bearer = await authenticationService.Login(loginDto);
                 
                 return Ok(bearer);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
         
         [HttpPost("register")]
-        public async Task<ActionResult> Register(RegisterDTO loginDto)
+        public async Task<ActionResult> Register(RegisterDTO registerDto)
         {
             try
             {
-                var token = await authenticationService.Register(loginDto);
+                // logger.LogInformation("email: {}; password: {}; captcha: {}", registerDto.Email, registerDto.Password, registerDto.Captcha);
+                var token = await authenticationService.Register(registerDto);
                 
                 return Ok(token);
             } 
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
 
@@ -46,26 +49,35 @@ namespace Y_Chat.Controllers
             {
                 var emailConfirmed = await authenticationService.ConfirmEmail(token);
                 
-                return Ok(emailConfirmed);
+                return Redirect("http://localhost:5173/");
             } 
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
 
+        [Authorize]
         [HttpPost("add-profile-details")]
         public async Task<ActionResult> AddProfileDetails(AddProfileDetailsDTO dto)
         {
             try
             {
-                var profile = await authenticationService.AddProfileDetails(dto);
+                var token = Request.Headers["Authorization"].ToString();
+
+                if (token.StartsWith("Bearer "))
+                {
+                    // Remove the "Bearer " part of the token
+                    token = token.Substring(7).Trim();
+                }
+                
+                var profile = await authenticationService.AddProfileDetails(dto, token);
                 
                 return Ok(profile);
             } 
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
     }

@@ -9,6 +9,17 @@ public class CheckProfileMiddleware(RequestDelegate next)
 
     public async Task InvokeAsync(HttpContext context)
     {
+        var endpoint = context.GetEndpoint();
+        var hasCheckProfileAttribute = endpoint?.Metadata
+            .OfType<ProfileCheck>()
+            .Any() ?? false;
+
+        if (!hasCheckProfileAttribute)
+        {
+            await _next(context);
+            return;
+        }
+        
         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
         if (string.IsNullOrEmpty(token))
@@ -31,7 +42,7 @@ public class CheckProfileMiddleware(RequestDelegate next)
     {
         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
         context.Response.ContentType = "application/json";
-        var response = new { error = message };
+        var response = new { message = message };
         await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
     }
 }

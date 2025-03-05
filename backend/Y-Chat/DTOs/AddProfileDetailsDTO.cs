@@ -2,7 +2,7 @@
 
 public class AddProfileDetailsDTO
 {
-    public long Id { get; set; }
     public string Username { get; set; }
-    public string AvatarURL { get; set; }
+    public string Image { get; set; }
+    public DateTime Birthday { get; set; }
 }

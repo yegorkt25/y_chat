@@ -1,35 +1,36 @@
 import * as React from "react";
 import FormComponent from "../components/FormComponent";
 import { useFormContext } from "../contexts/FormContext";
+import { useNavigate } from "react-router";
+import { SubmitProfileInformation } from "../utils";
+import AvatarUploader from "../components/AvatarUploader";
 
 const AddingProfileDetailsPage: React.FC = () => {
   const { formData } = useFormContext();
+  const navigate = useNavigate();
+  const [errors, setErrors] = React.useState<Record<string, string | null>>({
+    image: null,
+    username: null,
+    "birth-date": null,
+    submitError: null,
+  });
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
-
-  const handleAvatarChange = () => {
-    fileInputRef.current?.click();
-  };
 
   return (
     <div className="page-container">
       <div className="form-header">Fill in personal information</div>
       <hr className="form-linebreak additionalMargin" />
       <div className="form-container">
-        <FormComponent submitButtonText="Add profile details">
+        <FormComponent
+          submitButtonText="Add profile details"
+          submitButtonOnClick={() =>
+            SubmitProfileInformation(formData, navigate, setErrors)
+          }
+        >
           <label className="input-label">Avatar</label>
 
-          <div className="file-selection-container">
-            <div className="sub-label">
-              Choose a file: {formData["image"] && formData["image"].name}
-            </div>
-
-            <div
-              className="submit-button secondary-button"
-              onClick={handleAvatarChange}
-            >
-              Choose
-            </div>
-          </div>
+          <AvatarUploader />
+          {errors.image && <div className="error-message">{errors.image}</div>}
 
           <input
             ref={fileInputRef}
@@ -43,6 +44,7 @@ const AddingProfileDetailsPage: React.FC = () => {
           <label htmlFor="username" className="input-label">
             Username
           </label>
+
           <input
             type="text"
             name="username"
@@ -50,6 +52,11 @@ const AddingProfileDetailsPage: React.FC = () => {
             className="input"
             placeholder="Type your username"
           />
+
+          {errors.username && (
+            <div className="error-message">{errors.username}</div>
+          )}
+
           <label htmlFor="birth-date" className="input-label">
             Birth date
           </label>
@@ -60,10 +67,16 @@ const AddingProfileDetailsPage: React.FC = () => {
             className="input"
             placeholder="Confirm your password"
           />
+          {errors["birth-date"] && (
+            <div className="error-message">{errors["birth-date"]}</div>
+          )}
         </FormComponent>
         <div className="useful-links">
           <div className="useful-link">Back to login</div>
         </div>
+        {errors.submitError && (
+          <div className="error-message">{errors.submitError}</div>
+        )}
       </div>
     </div>
   );

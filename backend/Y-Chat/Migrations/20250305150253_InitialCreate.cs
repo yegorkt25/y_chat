@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -15,12 +16,13 @@ namespace Y_Chat.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    AvatarUrl = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Username = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    AvatarUrl = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    ProfileDetailsAdded = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {

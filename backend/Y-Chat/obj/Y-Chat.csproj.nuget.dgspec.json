@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Yehor\\RiderProjects\\Y-Chat\\Y-Chat\\Y-Chat.csproj": {}
+    "/home/yehor/Desktop/Projects/y_chat/backend/Y-Chat/Y-Chat.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Yehor\\RiderProjects\\Y-Chat\\Y-Chat\\Y-Chat.csproj": {
+    "/home/yehor/Desktop/Projects/y_chat/backend/Y-Chat/Y-Chat.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Yehor\\RiderProjects\\Y-Chat\\Y-Chat\\Y-Chat.csproj",
+        "projectUniqueName": "/home/yehor/Desktop/Projects/y_chat/backend/Y-Chat/Y-Chat.csproj",
         "projectName": "Y-Chat",
-        "projectPath": "C:\\Users\\Yehor\\RiderProjects\\Y-Chat\\Y-Chat\\Y-Chat.csproj",
-        "packagesPath": "C:\\Users\\Yehor\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Yehor\\RiderProjects\\Y-Chat\\Y-Chat\\obj\\",
+        "projectPath": "/home/yehor/Desktop/Projects/y_chat/backend/Y-Chat/Y-Chat.csproj",
+        "packagesPath": "/home/yehor/.nuget/packages/",
+        "outputPath": "/home/yehor/Desktop/Projects/y_chat/backend/Y-Chat/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Yehor\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/yehor/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -55,6 +55,10 @@
               "target": "Package",
               "version": "[8.0.13, )"
             },
+            "Microsoft.AspNetCore.Cors": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.10, )"
@@ -87,6 +91,14 @@
               "target": "Package",
               "version": "[8.0.7, )"
             },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[9.0.3, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"
@@ -115,7 +127,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/home/yehor/.dotnet/sdk/8.0.406/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

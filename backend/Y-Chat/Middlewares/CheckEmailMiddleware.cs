@@ -38,7 +38,7 @@ public class CheckEmailMiddleware(RequestDelegate next)
     {
         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
         context.Response.ContentType = "application/json";
-        var response = new { error = message };
+        var response = new { message = message };
         await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
     }
 }

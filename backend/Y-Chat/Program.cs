@@ -13,8 +13,10 @@ var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
 
 // Add services to the container.
 
+builder.Services.AddLogging();
+
 builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]));
+    opt.UseNpgsql(builder.Configuration["ConnectionStrings:DefaultConnection"]));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -34,10 +36,23 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin", corsPolicyBuilder =>
+    {
+        corsPolicyBuilder.WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddScoped<JwtTokenHelper>();
 
 builder.Services.AddScoped<IEmailTokenService, EmailTokenService>();
 builder.Services.AddScoped<IEmailSendingService, EmailSendingService>();
+builder.Services.AddScoped<HttpClient>();
+builder.Services.AddScoped<IImagesUploadService, ImagesUploadService>();
+builder.Services.AddScoped<IValidateGoogleCaptchaService, ValidateGoogleCaptchaService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
@@ -50,6 +65,8 @@ builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true
 
 var app = builder.Build();
 
+app.UseStaticFiles();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -57,12 +74,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowSpecificOrigin"); 
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<CheckEmailMiddleware>();
+
 app.UseMiddleware<CheckProfileMiddleware>();
 
 app.UseStaticFiles();

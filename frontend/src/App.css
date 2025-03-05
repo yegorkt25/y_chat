@@ -68,7 +68,7 @@ body {
   height: 1.625rem;
   font-size: 14px;
   font-weight: 300;
-  margin: 0px;
+  margin: auto;
 }
 
 .form {
@@ -143,4 +143,11 @@ body {
   display: flex;
   justify-content: space-between;
   width: 24.5rem;
+}
+
+.error-message {
+  font-size: 14px;
+  margin-top: 0.3rem;
+  color: #d02f2f;
+  font-style: italic;
 }

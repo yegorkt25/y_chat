@@ -4,11 +4,13 @@ import { useFormContext } from "../contexts/FormContext";
 interface FormComponentProps {
   children: React.ReactNode;
   submitButtonText: string;
+  submitButtonOnClick: (navigate?: (path: string) => void) => void;
 }
 
 const FormComponent: React.FC<FormComponentProps> = ({
   children,
   submitButtonText,
+  submitButtonOnClick,
 }) => {
   const formRef = React.useRef<HTMLFormElement | null>(null);
   const { formData, setFormData } = useFormContext();
@@ -23,13 +25,6 @@ const FormComponent: React.FC<FormComponentProps> = ({
     } else {
       setFormData({ ...formData, [name]: value });
     }
-
-    console.log(formData);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(formData);
   };
 
   const childrenArray = React.Children.map(children, (child) => {
@@ -45,11 +40,21 @@ const FormComponent: React.FC<FormComponentProps> = ({
   });
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="form">
+    <form
+      ref={formRef}
+      onSubmit={(e: any) => {
+        e.preventDefault();
+        submitButtonOnClick(e);
+      }}
+      className="form"
+    >
       {childrenArray}
 
       <div
-        onClick={() => formRef.current?.requestSubmit()}
+        onClick={() => {
+          formRef.current?.requestSubmit();
+          submitButtonOnClick();
+        }}
         className="submit-button"
       >
         {submitButtonText}
